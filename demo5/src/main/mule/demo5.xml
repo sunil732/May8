@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="fd8f8486-52da-452e-b5b1-4cd433ffb90e" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<flow name="demo5Flow" doc:id="f75a4ad1-6c66-48a5-8b79-73a50884c13a" >
+		<http:listener doc:name="Listener" doc:id="18dc7e42-21fd-4333-b03a-7b9c12971147" config-ref="HTTP_Listener_config" path="/sver"/>
+		<set-variable value="'nick'" doc:name="Set Variable v1" doc:id="cc62f091-06f9-4b01-8ae0-bd37aabc6af3" variableName="V1"/>
+		<set-variable value="#[attributes.queryParams.V2]" doc:name="Set Variable v2" doc:id="cffa7a64-9ef2-4189-b843-ebee1efc48c8" variableName="V2"/>
+		<set-variable value="#[attributes.queryParams.V3]" doc:name="Set Variable v3" doc:id="c7fe9110-19c1-452a-a00e-dcd7371df5fd" variableName="V3"/>
+		<set-payload doc:name="Set Payload" doc:id="83689b32-f9b5-4b26-8442-158051e1e189" value="#[vars.V1]"/>
+		<logger level="INFO" doc:name="Logger1" doc:id="c61fb706-16ad-4d7b-b83a-feb5b6a58b4c" message="#[vars.V1]"/>
+		<logger level="INFO" doc:name="Logger2" doc:id="68bb396b-453f-4bab-b56f-e49404cdd16e" message="#[vars.V2]"/>
+		<set-payload value="#[vars.V2]" doc:name="Set Payload1" doc:id="9ec8eab3-5143-4a90-b704-d9aa51293bdb" />
+		<ee:transform doc:name="Transform Message" doc:id="2070e4af-3e16-4749-94aa-898e210b5be9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-payload value="#[vars.V3]" doc:name="Set Payload3" doc:id="5ef2504d-def5-4e26-8688-5c1094a9a2fb" />
+		<ee:transform doc:name="Transform Message" doc:id="426e89ed-f3cc-4caa-87b6-bbab4b54dffa" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-payload value="#[vars.v1]" doc:name="Set Payload2" doc:id="8e366835-563b-4b86-9305-57404d9d256f" />
+		<ee:transform doc:name="Transform Message" doc:id="354db155-3ab3-46eb-92c7-187f288f2057" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="7c7d56d3-8b47-4f22-8142-8f3467fda420" message="#[payload]"/>
+	</flow>
+</mule>
